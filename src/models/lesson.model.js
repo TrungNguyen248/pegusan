@@ -18,12 +18,18 @@ const lessonSchema = new Schema(
             required: true,
         },
         contents: {
-            vocabulary: {
-                type: Array,
-            },
-            grammar: {
-                type: Array,
-            },
+            vocabulary: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: 'Vocabulary',
+                },
+            ],
+            grammar: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: 'grammar',
+                },
+            ],
             kaiwa: {
                 type: Array, // TODO later
             },

@@ -30,6 +30,8 @@ class CourseService {
             author: author.name,
         })
 
+        if (!newCourse) throw new BadRequestError('Somthing went wrong')
+
         return {
             newCourse,
         }
