@@ -1,6 +1,7 @@
 'use strict'
 
 const { model, Schema } = require('mongoose') // Erase if already required
+const slugify = require('slugify')
 
 const DOCUMENT_NAME = 'Course'
 const COLLECTION_NAME = 'Courses'
@@ -20,6 +21,9 @@ const courseSchema = new Schema(
             type: Schema.Types.Object,
             ref: 'User',
         },
+        course_slug: {
+            type: String,
+        },
         author: {
             type: String,
         },
@@ -29,6 +33,11 @@ const courseSchema = new Schema(
         collection: COLLECTION_NAME,
     }
 )
+//before save document
+courseSchema.pre('save', function (next) {
+    this.course_slug = slugify(this.name, { lower: true })
+    next()
+})
 
 //Export the model
 module.exports = model(DOCUMENT_NAME, courseSchema)

@@ -17,6 +17,18 @@ const lessonSchema = new Schema(
             type: String,
             required: true,
         },
+        isDraft: {
+            type: Boolean,
+            default: true,
+            index: true,
+            select: false,
+        },
+        isPublished: {
+            type: Boolean,
+            default: false,
+            index: true,
+            select: false,
+        },
         contents: {
             vocabulary: [
                 {

@@ -6,16 +6,10 @@ const lessonModel = require('../models/lesson.model')
 const { BadRequestError } = require('../core/error.response')
 
 class VocabularyService {
-    static add = async ({
+    static add = async (
         lesson_id,
-        word,
-        kanji,
-        kana,
-        meaning,
-        category,
-        example,
-        notes = null,
-    }) => {
+        { word, kanji, kana, meaning, category, example, notes = null }
+    ) => {
         const lessonExists = await findLessonById(lesson_id)
         if (!lessonExists) throw new BadRequestError('Lesson not found!!')
 
@@ -31,6 +25,8 @@ class VocabularyService {
         })
 
         /* Check trungf tuwf */
+        /* tach tu kanji -> unicode -> hex */
+        /* luu vao db array chua ma hex cua tung tu */
 
         if (!newVocab) throw new BadRequestError('Somthing went wrong')
         lessonExists.contents.vocabulary.push(newVocab._id)
@@ -39,8 +35,8 @@ class VocabularyService {
         return newVocab
     }
 
-    static getAll = async () => {
-        const listVocab = await getAllVocab()
+    static getAll = async (lesson_id) => {
+        const listVocab = await getAllVocab(lesson_id)
         if (listVocab.length == 0) {
             return {
                 message: 'No Vocab added',

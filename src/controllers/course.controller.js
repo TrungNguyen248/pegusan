@@ -19,6 +19,14 @@ class CourseController {
             metadata: await CourseService.getAllCourse(),
         }).send(res)
     }
+    updateCourse = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'Update course successfully',
+            metadata: await CourseService.updateCourse(req.params.course_id, {
+                ...req.body,
+            }),
+        }).send(res)
+    }
 }
 
 module.exports = new CourseController()
