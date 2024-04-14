@@ -12,10 +12,37 @@ class LessonController {
             }),
         }).send(res)
     }
+
     getAllLesson = async (req, res, next) => {
         new SuccessResponse({
             message: 'Get all lesson successfully',
             metadata: await LessonService.getAll(req.params.course_id),
+        }).send(res)
+    }
+
+    updateLesson = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'Update lesson successfully',
+            metadata: await LessonService.updateLesson(
+                req.params.course_id,
+                req.params.id,
+                {
+                    ...req.body,
+                }
+            ),
+        }).send(res)
+    }
+
+    releaseLesson = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'Release lesson successfully',
+            metadata: await LessonService.releaseLesson(req.params.id),
+        }).send(res)
+    }
+    unReleaseLesson = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'Un Release lesson successfully',
+            metadata: await LessonService.unReleaseLesson(req.params.id),
         }).send(res)
     }
 
@@ -24,6 +51,15 @@ class LessonController {
         new SuccessResponse({
             message: 'Get all draft lesson successfully',
             metadata: await LessonService.findAllDraftLesson(),
+        }).send(res)
+    }
+
+    getAllReleaseLesson = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'Get all Release lesson successfully',
+            metadata: await LessonService.findAllReleaseLesson(
+                req.params.course_id
+            ),
         }).send(res)
     }
 

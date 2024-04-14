@@ -23,7 +23,7 @@ const lessonSchema = new Schema(
             index: true,
             select: false,
         },
-        isPublished: {
+        isRelease: {
             type: Boolean,
             default: false,
             index: true,

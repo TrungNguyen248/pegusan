@@ -8,7 +8,6 @@ const vocabularyController = require('../../controllers/vocabulary.controller')
 const { authentication } = require('../../auth/authUtils')
 
 const router = express.Router()
-authentication
 router.use(authentication)
 
 router.post('/all', asyncHandler(courseController.getAllCourse))
@@ -20,8 +19,16 @@ router.post(
     '/:course_id/lesson/all',
     asyncHandler(lessonController.getAllLesson)
 )
-
 router.post('/:course_id/lesson', asyncHandler(lessonController.createLesson))
+router.post(
+    '/:course_id/lesson/:id',
+    asyncHandler(lessonController.updateLesson)
+)
+router.post('/lesson/release/:id', asyncHandler(lessonController.releaseLesson))
+router.post(
+    '/lesson/unRelease/:id',
+    asyncHandler(lessonController.unReleaseLesson)
+)
 
 //vocabulary
 router.post('/lesson/:lesson_id/vocab/', asyncHandler(vocabularyController.add))
@@ -38,6 +45,10 @@ router.post(
  * @return {JSON}
  */
 router.get('/drafts/all', asyncHandler(lessonController.getAllDraftLesson))
-//END QUERY//
+router.get(
+    '/:course_id/release/all',
+    asyncHandler(lessonController.getAllReleaseLesson)
+)
+//END QUERY//))
 
 module.exports = router

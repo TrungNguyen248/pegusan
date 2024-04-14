@@ -10,8 +10,8 @@ const findByName = async (name) => {
     return await courseModel.findOne({ name }).lean()
 }
 
-const findById = async (_id) => {
-    return await courseModel.findOne({ _id }).lean()
+const findById = async (course_id) => {
+    return await courseModel.findOne(new Types.ObjectId(course_id)).lean()
 }
 
 const getAll = async () => {
@@ -19,8 +19,10 @@ const getAll = async () => {
 }
 
 //lessons
-const findLessonByTitle = async (course_id, lesson_title) => {
-    return await lessonModel.findOne({ course: course_id, lesson_title }).lean()
+const findLessonByTitle = async ({ course_id, lesson_title }) => {
+    return await lessonModel
+        .findOne({ course: new Types.ObjectId(course_id), lesson_title })
+        .lean()
 }
 
 const findLessonById = async (lesson_id) => {
