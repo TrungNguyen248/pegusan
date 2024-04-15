@@ -30,8 +30,21 @@ const updateNestedObjectParser = (obj) => {
     return final
 }
 
+const kanjiToUnicode = (kanji) => {
+    if (kanji == '' || kanji == null) {
+        return
+    }
+    let unicodeArray = []
+    for (let i = 0; i < kanji.length; i++) {
+        let unicode = kanji.charCodeAt(i).toString(16)
+        unicodeArray.push('0' + unicode.toLowerCase())
+    }
+    return unicodeArray
+}
+
 module.exports = {
     getInfoData,
     removeUnderfinedObjectKey,
     updateNestedObjectParser,
+    kanjiToUnicode,
 }

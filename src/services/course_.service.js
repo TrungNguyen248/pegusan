@@ -30,7 +30,9 @@ const findLessonById = async (lesson_id) => {
 }
 
 const getAllLesson = async (course_id) => {
-    return await lessonModel.find({ course: course_id }).lean()
+    return await lessonModel
+        .find({ course: new Types.ObjectId(course_id) })
+        .lean()
 }
 
 //vocab

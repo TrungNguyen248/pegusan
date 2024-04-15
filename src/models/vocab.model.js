@@ -1,4 +1,6 @@
 const { Schema, model } = require('mongoose')
+const { kanjiToUnicode } = require('../utils')
+const lessonModel = require('./lesson.model')
 
 const DOCUMENT_NAME = 'Vocabulary'
 const COLLECTION_NAME = 'Vocabularys'
@@ -20,6 +22,10 @@ const vocabularySchema = new Schema(
         kana: {
             type: String, //phát âm ra hira và kata
             require: true,
+        },
+        hex_string: {
+            type: Array,
+            default: [],
         },
         meaning: {
             type: String,
@@ -50,5 +56,10 @@ const vocabularySchema = new Schema(
         collection: COLLECTION_NAME,
     }
 )
+
+//before save document
+vocabularySchema.pre('save', async function (next) {
+    this.hex_string = kanjiToUnicode(this.kanji)
+})
 
 module.exports = model(DOCUMENT_NAME, vocabularySchema)

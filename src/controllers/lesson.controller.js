@@ -13,6 +13,13 @@ class LessonController {
         }).send(res)
     }
 
+    getOneLesson = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'Get lesson successfully',
+            metadata: await LessonService.getOneLesson(req.params.lesson_id),
+        }).send(res)
+    }
+
     getAllLesson = async (req, res, next) => {
         new SuccessResponse({
             message: 'Get all lesson successfully',

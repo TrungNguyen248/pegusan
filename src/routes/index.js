@@ -11,5 +11,7 @@ router.use(permission('0000'))
 
 router.use('/v1/api', require('./access'))
 router.use('/v1/api/course', require('./course'))
+router.use('/v1/api/lesson', require('./lesson'))
+router.use('/v1/api/vocab', require('./vocab'))
 
 module.exports = router

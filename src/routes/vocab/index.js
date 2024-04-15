@@ -1,7 +1,6 @@
 'use strict'
 
 const express = require('express')
-const courseController = require('../../controllers/course.controller')
 const asyncHandler = require('../../helpers/asyncHandler')
 const vocabularyController = require('../../controllers/vocabulary.controller')
 const { authentication } = require('../../auth/authUtils')
@@ -9,8 +8,11 @@ const { authentication } = require('../../auth/authUtils')
 const router = express.Router()
 router.use(authentication)
 
-router.post('/all', asyncHandler(courseController.getAllCourse))
-router.post('', asyncHandler(courseController.createCourse))
-router.patch('/:course_id', asyncHandler(courseController.updateCourse))
+router.post('/add/:lesson_id', asyncHandler(vocabularyController.add))
+router.post('/all/:lesson_id', asyncHandler(vocabularyController.getAll))
+router.post(
+    '/update/:lesson_id/:id',
+    asyncHandler(vocabularyController.updateVocab)
+)
 
 module.exports = router

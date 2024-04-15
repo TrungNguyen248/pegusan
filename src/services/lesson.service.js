@@ -14,6 +14,7 @@ const {
     unReleaseLesson,
     findAllReleaseLesson,
     updateLesson,
+    findOneLesson,
 } = require('../models/repos/lesson.repo')
 
 class LessonService {
@@ -49,6 +50,11 @@ class LessonService {
         }
         return listLessons
     }
+    static getOneLesson = async (lesson_id) => {
+        const lessonExists = await findOneLesson(lesson_id)
+        if (!lessonExists) throw new BadRequestError('lesson not found')
+        return lessonExists
+    }
     //Patch
     static updateLesson = async (course_id, lesson_id, bodyUpdate) => {
         const lessonExists = await findLessonByTitle({
@@ -58,12 +64,15 @@ class LessonService {
         if (lessonExists) {
             if (lessonExists._id != lesson_id)
                 throw new BadRequestError('lesson already exists')
+            else {
+                return await updateLesson(
+                    lesson_id,
+                    removeUnderfinedObjectKey(bodyUpdate)
+                )
+            }
+        } else {
+            throw new BadRequestError('lesson not found')
         }
-
-        return await updateLesson(
-            lesson_id,
-            removeUnderfinedObjectKey(bodyUpdate)
-        )
     }
     //End Patch
 

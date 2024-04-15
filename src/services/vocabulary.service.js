@@ -2,40 +2,32 @@
 
 const { findLessonById, getAllVocab } = require('./course_.service')
 const vocabularyModel = require('../models/vocab.model')
-const lessonModel = require('../models/lesson.model')
 const { BadRequestError } = require('../core/error.response')
+const {
+    updateVocab,
+    addVocabIdToLesson,
+} = require('../models/repos/vocab.repo')
+const { removeUnderfinedObjectKey, kanjiToUnicode } = require('../utils')
 
 class VocabularyService {
-    static add = async (
-        lesson_id,
-        { word, kanji, kana, meaning, category, example, notes = null }
-    ) => {
-        const lessonExists = await findLessonById(lesson_id)
-        if (!lessonExists) throw new BadRequestError('Lesson not found!!')
-
+    static add = async (lesson_id, bodyData) => {
+        const vocabExists = await vocabularyModel
+            .findOne({ lesson: lesson_id, word: bodyData.word })
+            .lean()
+        if (vocabExists) throw new BadRequestError('vocabulary already exists')
         const newVocab = await vocabularyModel.create({
             lesson: lesson_id,
-            word,
-            kanji,
-            kana,
-            meaning,
-            category,
-            example,
-            notes,
+            ...bodyData,
         })
 
-        /* Check trungf tuwf */
-        /* tach tu kanji -> unicode -> hex */
-        /* luu vao db array chua ma hex cua tung tu */
-
         if (!newVocab) throw new BadRequestError('Somthing went wrong')
-        lessonExists.contents.vocabulary.push(newVocab._id)
-        await lessonExists.save()
-
+        await addVocabIdToLesson(lesson_id, newVocab._id)
         return newVocab
     }
 
     static getAll = async (lesson_id) => {
+        const lessonExists = await findLessonById(lesson_id)
+        if (!lessonExists) throw new BadRequestError('Lesson not found!!')
         const listVocab = await getAllVocab(lesson_id)
         if (listVocab.length == 0) {
             return {
@@ -43,6 +35,28 @@ class VocabularyService {
             }
         }
         return listVocab
+    }
+
+    static updateVocab = async (lesson_id, vocab_id, bodyUpdate) => {
+        const vocabExists = await vocabularyModel
+            .findOne({ lesson: lesson_id, word: bodyUpdate?.word })
+            .lean()
+
+        if (vocabExists) {
+            if (vocabExists._id != vocab_id) {
+                throw new BadRequestError('Word already exists')
+            } else {
+                if (bodyUpdate?.kanji) {
+                    bodyUpdate.hex_string = kanjiToUnicode(bodyUpdate?.kanji)
+                }
+                return updateVocab(
+                    vocab_id,
+                    removeUnderfinedObjectKey(bodyUpdate)
+                )
+            }
+        } else {
+            throw new BadRequestError('No word found')
+        }
     }
 }
 

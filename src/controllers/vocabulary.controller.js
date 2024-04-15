@@ -18,6 +18,18 @@ class VocabularyController {
             metadata: await VocabularyService.getAll(req.params.lesson_id),
         }).send(res)
     }
+    updateVocab = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'update vocabulary successfully',
+            metadata: await VocabularyService.updateVocab(
+                req.params.lesson_id,
+                req.params.id,
+                {
+                    ...req.body,
+                }
+            ),
+        }).send(res)
+    }
 }
 
 module.exports = new VocabularyController()

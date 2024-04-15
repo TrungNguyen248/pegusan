@@ -17,6 +17,18 @@ const findAllReleaseLesson = async ({ query, limit, skip }) => {
     return await queryLesson({ query, limit, skip })
 }
 
+const findOneLesson = async (lesson_id) => {
+    return await lessonModel
+        .findOne({ _id: lesson_id })
+        .populate('course', 'name author -_id')
+        .populate({
+            path: 'contents',
+            populate: { path: 'vocabulary', select: '-_id' },
+        })
+        .lean()
+        .exec()
+}
+
 const queryLesson = async ({ query, limit, skip }) => {
     return await lessonModel
         .find(query)
@@ -74,4 +86,5 @@ module.exports = {
     findAllReleaseLesson,
     unReleaseLesson,
     updateLesson,
+    findOneLesson,
 }
