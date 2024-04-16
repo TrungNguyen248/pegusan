@@ -39,7 +39,7 @@ const lessonSchema = new Schema(
             grammar: [
                 {
                     type: Schema.Types.ObjectId,
-                    ref: 'grammar',
+                    ref: 'Grammar',
                 },
             ],
             kaiwa: {

@@ -3,10 +3,8 @@
 const { findLessonById, getAllVocab } = require('./course_.service')
 const vocabularyModel = require('../models/vocab.model')
 const { BadRequestError } = require('../core/error.response')
-const {
-    updateVocab,
-    addVocabIdToLesson,
-} = require('../models/repos/vocab.repo')
+const { updateVocab } = require('../models/repos/vocab.repo')
+const { addVocabIdToLesson } = require('../models/repos/lesson.repo')
 const { removeUnderfinedObjectKey, kanjiToUnicode } = require('../utils')
 
 class VocabularyService {
@@ -21,7 +19,7 @@ class VocabularyService {
         })
 
         if (!newVocab) throw new BadRequestError('Somthing went wrong')
-        await addVocabIdToLesson(lesson_id, newVocab._id)
+        await addVocabIdToLesson({ lesson_id, vocab_id: newVocab._id })
         return newVocab
     }
 
@@ -38,6 +36,12 @@ class VocabularyService {
     }
 
     static updateVocab = async (lesson_id, vocab_id, bodyUpdate) => {
+        const vocabById = await vocabularyModel
+            .findOne({ _id: vocab_id })
+            .lean()
+
+        if (!vocabById) throw new BadRequestError('word not found')
+
         const vocabExists = await vocabularyModel
             .findOne({ lesson: lesson_id, word: bodyUpdate?.word })
             .lean()
@@ -45,18 +49,13 @@ class VocabularyService {
         if (vocabExists) {
             if (vocabExists._id != vocab_id) {
                 throw new BadRequestError('Word already exists')
-            } else {
-                if (bodyUpdate?.kanji) {
-                    bodyUpdate.hex_string = kanjiToUnicode(bodyUpdate?.kanji)
-                }
-                return updateVocab(
-                    vocab_id,
-                    removeUnderfinedObjectKey(bodyUpdate)
-                )
             }
-        } else {
-            throw new BadRequestError('No word found')
         }
+
+        if (bodyUpdate?.kanji) {
+            bodyUpdate.hex_string = kanjiToUnicode(bodyUpdate?.kanji)
+        }
+        return updateVocab(vocab_id, removeUnderfinedObjectKey(bodyUpdate))
     }
 }
 

@@ -25,6 +25,10 @@ const findOneLesson = async (lesson_id) => {
             path: 'contents',
             populate: { path: 'vocabulary', select: '-_id' },
         })
+        .populate({
+            path: 'contents',
+            populate: { path: 'grammar', select: '-_id' },
+        })
         .lean()
         .exec()
 }
@@ -80,6 +84,28 @@ const unReleaseLesson = async (lesson_id) => {
     return modifiedCount
 }
 
+const addGrammarIdToLesson = async ({
+    lesson_id,
+    type = 'grammar',
+    grammar_id,
+}) => {
+    await addContentToLesson(lesson_id, type, grammar_id)
+}
+
+const addVocabIdToLesson = async ({
+    lesson_id,
+    type = 'vocabulary',
+    vocab_id,
+}) => {
+    await addContentToLesson(lesson_id, type, vocab_id)
+}
+
+const addContentToLesson = async (lesson_id, type, content_id) => {
+    const lessonExists = await lessonModel.findOne({ _id: lesson_id })
+    lessonExists.contents[type].push(content_id)
+    await lessonExists.save()
+}
+
 module.exports = {
     findAllDraftLesson,
     releaseLesson,
@@ -87,4 +113,6 @@ module.exports = {
     unReleaseLesson,
     updateLesson,
     findOneLesson,
+    addGrammarIdToLesson,
+    addVocabIdToLesson,
 }

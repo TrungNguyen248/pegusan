@@ -24,6 +24,9 @@ const grammarSchema = new Schema(
         example: {
             type: String,
         },
+        image: {
+            type: String,
+        },
         notes: {
             type: String,
         },

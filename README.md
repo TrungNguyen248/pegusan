@@ -28,14 +28,14 @@
 
 -   (D)-- - /add/:lesson_id POST (Add vocab by lesson id)
 -   (D)-- - /all/:lesson_id POST (Get all vocab by lesson id)
--   (D)-- - /update/:id PATCH (update vocab file, meaning, ...)
+-   (D)-- - /update/:lesson_id/:id PATCH (update vocab file, meaning, ...)
 -   -- - /delete/:id DELETE (Delete vocab)
 
 #### ---------/v1/api/grammar-----------
 
 -   -- - /add/:lesson_id POST (Add grammar by lesson id)
 -   -- - /all/:lesson_id POST (Get all grammar by lesson id)
--   -- - /update/:id PATCH (update grammar, ...)
+-   -- - /update/:lesson_id/:id PATCH (update grammar, ...)
 -   -- - /delete/:id DELETE (Delete grammar)
 
 #### ---------Query------------
