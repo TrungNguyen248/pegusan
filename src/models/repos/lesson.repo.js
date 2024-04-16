@@ -2,7 +2,8 @@
 
 const lessonModel = require('../lesson.model')
 const { Types } = require('mongoose')
-const { BadRequestError } = require('../../core/error.response')
+const { NotFoundError } = require('../../core/error.response')
+const { convert2ObjectId } = require('../../utils')
 
 const updateLesson = async (lesson_id, bodyUpdate, isNew = true) => {
     return await lessonModel.findByIdAndUpdate(lesson_id, bodyUpdate, {
@@ -47,7 +48,7 @@ const queryLesson = async ({ query, limit, skip }) => {
 
 const releaseLesson = async (lesson_id) => {
     const foundLesson = await lessonModel.findOne({
-        _id: new Types.ObjectId(lesson_id),
+        _id: convert2ObjectId(lesson_id),
     })
 
     if (!foundLesson) return null
@@ -67,7 +68,7 @@ const releaseLesson = async (lesson_id) => {
 
 const unReleaseLesson = async (lesson_id) => {
     const foundLesson = await lessonModel.findOne({
-        _id: new Types.ObjectId(lesson_id),
+        _id: convert2ObjectId(lesson_id),
     })
 
     if (!foundLesson) return null
@@ -102,8 +103,8 @@ const addVocabIdToLesson = async ({
 }
 
 const addContentToLesson = async (lesson_id, type, content_id) => {
-    const lessonExists = await lessonModel.findOne({ _id: lesson_id })
-    if (!lessonExists) throw new BadRequestError('lesson not found')
+    const lessonExists = await lessonModel.findById(convert2ObjectId(lesson_id))
+    if (!lessonExists) throw new NotFoundError('lesson not found')
     lessonExists.contents[type].push(content_id)
     await lessonExists.save()
 }
@@ -124,8 +125,8 @@ const removeGrammarIdFromLesson = async ({
 }
 
 const removeContentFromLesson = async (lesson_id, type, content_id) => {
-    const lessonExists = await lessonModel.findOne({ _id: lesson_id })
-    if (!lessonExists) throw new BadRequestError('lesson not found')
+    const lessonExists = await lessonModel.findById(convert2ObjectId(lesson_id))
+    if (!lessonExists) throw new NotFoundError('lesson not found')
     lessonExists.contents[type].remove(content_id)
     await lessonExists.save()
 }

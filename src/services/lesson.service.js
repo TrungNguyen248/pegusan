@@ -1,13 +1,10 @@
 'use strict'
 
-const { BadRequestError } = require('../core/error.response')
+const { BadRequestError, NotFoundError } = require('../core/error.response')
 const lessonModel = require('../models/lesson.model')
-const { removeUnderfinedObjectKey } = require('../utils')
-const {
-    findLessonByTitle,
-    findById,
-    getAllLesson,
-} = require('./course_.service')
+const courseModel = require('../models/course.model')
+const { removeUnderfinedObjectKey, convert2ObjectId } = require('../utils')
+const { getAllLesson } = require('./course_.service')
 const {
     findAllDraftLesson,
     releaseLesson,
@@ -18,12 +15,15 @@ const {
 } = require('../models/repos/lesson.repo')
 
 class LessonService {
-    static createLesson = async (course_id, { lesson_title }) => {
-        const courseExist = await findById(course_id)
-        if (!courseExist) throw new BadRequestError('Course not found!!')
+    static createLesson = async ({ course_id, lesson_title, ...bodyData }) => {
+        const courseExist = await courseModel.findById(
+            convert2ObjectId(course_id)
+        )
 
-        const lessonExists = await findLessonByTitle({
-            course_id,
+        if (!courseExist) throw new NotFoundError('Course not found!!')
+
+        const lessonExists = await lessonModel.findOne({
+            course: convert2ObjectId(course_id),
             lesson_title,
         })
         if (lessonExists) throw new BadRequestError('Lesson already exists')
@@ -31,6 +31,7 @@ class LessonService {
         const newLesson = await lessonModel.create({
             course: course_id,
             lesson_title,
+            bodyData,
         })
 
         if (!newLesson) throw new BadRequestError('Something went wrong')
@@ -39,40 +40,45 @@ class LessonService {
     }
 
     static getAll = async (course_id) => {
-        const courseExist = await findById(course_id)
-        if (!courseExist) throw new BadRequestError('Course not found!!')
-        const listLessons = await getAllLesson(course_id)
+        const courseExist = await courseModel
+            .findById(convert2ObjectId(course_id))
+            .lean()
+        if (!courseExist) throw new NotFoundError('Course not found!!')
+        const listLessons = await lessonModel
+            .find({
+                course: convert2ObjectId(course_id),
+            })
+            .lean()
 
         if (listLessons.length == 0) {
-            return {
-                message: 'Lesson not found',
-            }
+            return null
         }
         return listLessons
     }
     static getOneLesson = async (lesson_id) => {
         const lessonExists = await findOneLesson(lesson_id)
-        if (!lessonExists) throw new BadRequestError('lesson not found')
+        if (!lessonExists) throw new NotFoundError('lesson not found')
         return lessonExists
     }
     //Patch
-    static updateLesson = async (course_id, lesson_id, bodyUpdate) => {
-        const lessonExists = await findLessonByTitle({
-            course_id,
+    static updateLesson = async (lesson_id, { course_id, ...bodyUpdate }) => {
+        const lessonById = await lessonModel.findById(
+            convert2ObjectId(lesson_id)
+        )
+        if (!lessonById) throw new NotFoundError('lesson not found')
+        const lessonExists = await lessonModel.findOne({
+            course: course_id,
             lesson_title: bodyUpdate?.lesson_title,
         })
         if (lessonExists) {
             if (lessonExists._id != lesson_id)
                 throw new BadRequestError('lesson already exists')
-            else {
-                return await updateLesson(
-                    lesson_id,
-                    removeUnderfinedObjectKey(bodyUpdate)
-                )
-            }
-        } else {
-            throw new BadRequestError('lesson not found')
         }
+
+        return await updateLesson(
+            lesson_id,
+            removeUnderfinedObjectKey(bodyUpdate)
+        )
     }
     //End Patch
 

@@ -14,5 +14,6 @@ router.use('/v1/api/course', require('./course'))
 router.use('/v1/api/lesson', require('./lesson'))
 router.use('/v1/api/vocab', require('./vocab'))
 router.use('/v1/api/grammar', require('./grammar'))
+router.use('/v1/api/comment', require('./comment'))
 
 module.exports = router

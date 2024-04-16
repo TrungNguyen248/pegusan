@@ -1,5 +1,6 @@
 'use strict'
 
+const { Types } = require('mongoose')
 const _ = require('lodash')
 
 const getInfoData = ({ fields = [], object = {} }) => {
@@ -42,9 +43,14 @@ const kanjiToUnicode = (kanji) => {
     return unicodeArray
 }
 
+const convert2ObjectId = (id) => {
+    return new Types.ObjectId(id)
+}
+
 module.exports = {
     getInfoData,
     removeUnderfinedObjectKey,
     updateNestedObjectParser,
     kanjiToUnicode,
+    convert2ObjectId,
 }

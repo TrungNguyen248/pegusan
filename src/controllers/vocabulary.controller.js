@@ -7,9 +7,7 @@ class VocabularyController {
     add = async (req, res, next) => {
         new CREATED({
             message: 'add vocabulary successfully',
-            metadata: await VocabularyService.add(req.params.lesson_id, {
-                ...req.body,
-            }),
+            metadata: await VocabularyService.add(req.body),
         }).send(res)
     }
     getAll = async (req, res, next) => {
@@ -21,22 +19,17 @@ class VocabularyController {
     updateVocab = async (req, res, next) => {
         new SuccessResponse({
             message: 'update vocabulary successfully',
-            metadata: await VocabularyService.updateVocab(
-                req.params.lesson_id,
-                req.params.id,
-                {
-                    ...req.body,
-                }
-            ),
+            metadata: await VocabularyService.updateVocab(req.params.id, {
+                ...req.body,
+            }),
         }).send(res)
     }
     deleteVocab = async (req, res, next) => {
         new SuccessResponse({
             message: 'Delete Vocab successfully',
-            metadata: await VocabularyService.deleteVocab(
-                req.params.lesson_id,
-                req.params.id
-            ),
+            metadata: await VocabularyService.deleteVocab(req.params.id, {
+                ...req.body,
+            }),
         }).send(res)
     }
 }

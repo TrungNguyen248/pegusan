@@ -2,16 +2,20 @@
 
 const { findLessonById, getAllVocab } = require('./course_.service')
 const vocabularyModel = require('../models/vocab.model')
-const { BadRequestError } = require('../core/error.response')
+const { BadRequestError, NotFoundError } = require('../core/error.response')
 const { updateVocab } = require('../models/repos/vocab.repo')
 const {
     addVocabIdToLesson,
     removeVocabIdFromLesson,
 } = require('../models/repos/lesson.repo')
-const { removeUnderfinedObjectKey, kanjiToUnicode } = require('../utils')
+const {
+    removeUnderfinedObjectKey,
+    kanjiToUnicode,
+    convert2ObjectId,
+} = require('../utils')
 
 class VocabularyService {
-    static add = async (lesson_id, bodyData) => {
+    static add = async ({ lesson_id, ...bodyData }) => {
         const vocabExists = await vocabularyModel
             .findOne({ lesson: lesson_id, word: bodyData.word })
             .lean()
@@ -28,7 +32,7 @@ class VocabularyService {
 
     static getAll = async (lesson_id) => {
         const lessonExists = await findLessonById(lesson_id)
-        if (!lessonExists) throw new BadRequestError('Lesson not found!!')
+        if (!lessonExists) throw new NotFoundError('Lesson not found!!')
         const listVocab = await getAllVocab(lesson_id)
         if (listVocab.length == 0) {
             return {
@@ -38,12 +42,12 @@ class VocabularyService {
         return listVocab
     }
 
-    static updateVocab = async (lesson_id, vocab_id, bodyUpdate) => {
+    static updateVocab = async (vocab_id, { lesson_id, ...bodyUpdate }) => {
         const vocabById = await vocabularyModel
-            .findOne({ _id: vocab_id })
+            .findById(convert2ObjectId(vocab_id))
             .lean()
 
-        if (!vocabById) throw new BadRequestError('word not found')
+        if (!vocabById) throw new NotFoundError('word not found')
 
         const vocabExists = await vocabularyModel
             .findOne({ lesson: lesson_id, word: bodyUpdate?.word })
@@ -61,15 +65,16 @@ class VocabularyService {
         return updateVocab(vocab_id, removeUnderfinedObjectKey(bodyUpdate))
     }
 
-    static deleteVocab = async (lesson_id, vocab_id) => {
+    static deleteVocab = async (vocab_id, { lesson_id }) => {
         const vocabExists = await vocabularyModel
-            .findOne({ _id: vocab_id })
+            .findById(convert2ObjectId(vocab_id))
             .lean()
-        if (!vocabExists) throw new BadRequestError('vocab not found')
+        if (!vocabExists) throw new NotFoundError('Vocab not found')
 
         await removeVocabIdFromLesson({ lesson_id, vocab_id })
 
         await vocabularyModel.deleteOne({ _id: vocab_id })
+        return true
     }
 }
 

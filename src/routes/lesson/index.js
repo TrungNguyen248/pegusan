@@ -8,13 +8,10 @@ const { authentication } = require('../../auth/authUtils')
 const router = express.Router()
 router.use(authentication)
 
+router.post('', asyncHandler(lessonController.createLesson))
 router.post('/:lesson_id', asyncHandler(lessonController.getOneLesson))
-router.post('/all/:course_id', asyncHandler(lessonController.getAllLesson))
-router.post('/create/:course_id', asyncHandler(lessonController.createLesson))
-router.post(
-    '/update/:course_id/:id',
-    asyncHandler(lessonController.updateLesson)
-)
+router.post('/all/:course_id', asyncHandler(lessonController.getAllLesson)) //?
+router.patch('/:id', asyncHandler(lessonController.updateLesson))
 router.post('/release/:id', asyncHandler(lessonController.releaseLesson))
 router.post('/unRelease/:id', asyncHandler(lessonController.unReleaseLesson))
 //QUERY//

@@ -7,9 +7,7 @@ class LessonController {
     createLesson = async (req, res, next) => {
         new CREATED({
             message: 'Created lesson successfully',
-            metadata: await LessonService.createLesson(req.params.course_id, {
-                ...req.body,
-            }),
+            metadata: await LessonService.createLesson(req.body),
         }).send(res)
     }
 
@@ -30,13 +28,9 @@ class LessonController {
     updateLesson = async (req, res, next) => {
         new SuccessResponse({
             message: 'Update lesson successfully',
-            metadata: await LessonService.updateLesson(
-                req.params.course_id,
-                req.params.id,
-                {
-                    ...req.body,
-                }
-            ),
+            metadata: await LessonService.updateLesson(req.params.id, {
+                ...req.body,
+            }),
         }).send(res)
     }
 
