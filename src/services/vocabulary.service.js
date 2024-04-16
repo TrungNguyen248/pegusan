@@ -4,7 +4,10 @@ const { findLessonById, getAllVocab } = require('./course_.service')
 const vocabularyModel = require('../models/vocab.model')
 const { BadRequestError } = require('../core/error.response')
 const { updateVocab } = require('../models/repos/vocab.repo')
-const { addVocabIdToLesson } = require('../models/repos/lesson.repo')
+const {
+    addVocabIdToLesson,
+    removeVocabIdFromLesson,
+} = require('../models/repos/lesson.repo')
 const { removeUnderfinedObjectKey, kanjiToUnicode } = require('../utils')
 
 class VocabularyService {
@@ -56,6 +59,17 @@ class VocabularyService {
             bodyUpdate.hex_string = kanjiToUnicode(bodyUpdate?.kanji)
         }
         return updateVocab(vocab_id, removeUnderfinedObjectKey(bodyUpdate))
+    }
+
+    static deleteVocab = async (lesson_id, vocab_id) => {
+        const vocabExists = await vocabularyModel
+            .findOne({ _id: vocab_id })
+            .lean()
+        if (!vocabExists) throw new BadRequestError('vocab not found')
+
+        await removeVocabIdFromLesson({ lesson_id, vocab_id })
+
+        await vocabularyModel.deleteOne({ _id: vocab_id })
     }
 }
 

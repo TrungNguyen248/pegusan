@@ -30,6 +30,15 @@ class VocabularyController {
             ),
         }).send(res)
     }
+    deleteVocab = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'Delete Vocab successfully',
+            metadata: await VocabularyService.deleteVocab(
+                req.params.lesson_id,
+                req.params.id
+            ),
+        }).send(res)
+    }
 }
 
 module.exports = new VocabularyController()

@@ -24,6 +24,15 @@ class GrammarController {
             ),
         }).send(res)
     }
+    deleteGrammar = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'delete grammar successfully',
+            metadata: await GrammarService.deleteGrammar(
+                req.params.lesson_id,
+                req.params.id
+            ),
+        }).send(res)
+    }
 }
 
 module.exports = new GrammarController()

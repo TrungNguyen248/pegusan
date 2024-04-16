@@ -33,9 +33,9 @@
 
 #### ---------/v1/api/grammar-----------
 
--   -- - /add/:lesson_id POST (Add grammar by lesson id)
--   -- - /all/:lesson_id POST (Get all grammar by lesson id)
--   -- - /update/:lesson_id/:id PATCH (update grammar, ...)
+-   (D)-- - /add/:lesson_id POST (Add grammar by lesson id)
+-   (X)-- - /all/:lesson_id POST (Get all grammar by lesson id)
+-   (D)-- - /update/:lesson_id/:id PATCH (update grammar, ...)
 -   -- - /delete/:id DELETE (Delete grammar)
 
 #### ---------Query------------

@@ -14,5 +14,9 @@ router.post(
     '/update/:lesson_id/:id',
     asyncHandler(vocabularyController.updateVocab)
 )
+router.post(
+    '/delete/:lesson_id/:id',
+    asyncHandler(vocabularyController.deleteVocab)
+)
 
 module.exports = router

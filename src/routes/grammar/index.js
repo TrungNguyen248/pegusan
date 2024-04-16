@@ -13,5 +13,9 @@ router.post(
     '/update/:lesson_id/:id',
     asyncHandler(GrammarController.updateGrammar)
 )
+router.post(
+    '/delete/:lesson_id/:id',
+    asyncHandler(GrammarController.deleteGrammar)
+)
 
 module.exports = router

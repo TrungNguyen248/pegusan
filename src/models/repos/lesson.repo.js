@@ -2,6 +2,7 @@
 
 const lessonModel = require('../lesson.model')
 const { Types } = require('mongoose')
+const { BadRequestError } = require('../../core/error.response')
 
 const updateLesson = async (lesson_id, bodyUpdate, isNew = true) => {
     return await lessonModel.findByIdAndUpdate(lesson_id, bodyUpdate, {
@@ -102,7 +103,30 @@ const addVocabIdToLesson = async ({
 
 const addContentToLesson = async (lesson_id, type, content_id) => {
     const lessonExists = await lessonModel.findOne({ _id: lesson_id })
+    if (!lessonExists) throw new BadRequestError('lesson not found')
     lessonExists.contents[type].push(content_id)
+    await lessonExists.save()
+}
+
+const removeVocabIdFromLesson = async ({
+    lesson_id,
+    type = 'vocabulary',
+    vocab_id,
+}) => {
+    await removeContentFromLesson(lesson_id, type, vocab_id)
+}
+const removeGrammarIdFromLesson = async ({
+    lesson_id,
+    type = 'grammar',
+    grammar_id,
+}) => {
+    await removeContentFromLesson(lesson_id, type, grammar_id)
+}
+
+const removeContentFromLesson = async (lesson_id, type, content_id) => {
+    const lessonExists = await lessonModel.findOne({ _id: lesson_id })
+    if (!lessonExists) throw new BadRequestError('lesson not found')
+    lessonExists.contents[type].remove(content_id)
     await lessonExists.save()
 }
 
@@ -115,4 +139,6 @@ module.exports = {
     findOneLesson,
     addGrammarIdToLesson,
     addVocabIdToLesson,
+    removeGrammarIdFromLesson,
+    removeVocabIdFromLesson,
 }

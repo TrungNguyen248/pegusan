@@ -1,7 +1,10 @@
 'use strict'
 
 const grammarModel = require('../models/grammar.model')
-const { addGrammarIdToLesson } = require('../models/repos/lesson.repo')
+const {
+    addGrammarIdToLesson,
+    removeGrammarIdFromLesson,
+} = require('../models/repos/lesson.repo')
 const { BadRequestError } = require('../core/error.response')
 const { removeUnderfinedObjectKey } = require('../utils')
 const { updateGrammar } = require('../models/repos/grammar.repo')
@@ -46,6 +49,17 @@ class GrammarService {
             grammar_id,
             removeUnderfinedObjectKey(bodyUpdate)
         )
+    }
+
+    static deleteGrammar = async (lesson_id, grammar_id) => {
+        const grammarExist = await grammarModel
+            .findOne({ _id: grammar_id })
+            .lean()
+        if (!grammarExist) throw new BadRequestError('Grammar not found')
+
+        await removeGrammarIdFromLesson({ lesson_id, grammar_id })
+
+        await grammarModel.deleteOne({ _id: grammar_id })
     }
 }
 
