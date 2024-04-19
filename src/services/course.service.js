@@ -6,6 +6,7 @@ const { findById } = require('./user.service')
 const { removeUnderfinedObjectKey, convert2ObjectId } = require('../utils')
 const { BadRequestError, NotFoundError } = require('../core/error.response')
 const courseModel = require('../models/course.model')
+const { pushNotiToSystem } = require('./notification.service')
 
 class CourseService {
     static getAllCourse = async () => {
@@ -28,7 +29,18 @@ class CourseService {
             user: user.userId,
             author: author.name,
         })
-
+        //push notification
+        pushNotiToSystem({
+            type: 'COURSE-001',
+            receivedId: 1,
+            senderId: user.userId,
+            options: {
+                course_name: newCourse.name,
+                author: author.name,
+            },
+        })
+            .then((rs) => console.log(rs))
+            .catch((err) => console.error(err))
         if (!newCourse) throw new BadRequestError('Somthing went wrong')
 
         return newCourse
