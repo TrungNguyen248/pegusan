@@ -1,8 +1,9 @@
 'use strict'
 
 const { updateCourse } = require('../models/repos/course.repo')
-const { findByName, getAll } = require('./course_.service')
-const { findById } = require('./user.service')
+const { findByName, getAll } = require('../models/repos/course.repo')
+const userModel = require('../models/user.model')
+
 const { removeUnderfinedObjectKey, convert2ObjectId } = require('../utils')
 const { BadRequestError, NotFoundError } = require('../core/error.response')
 const courseModel = require('../models/course.model')
@@ -21,7 +22,7 @@ class CourseService {
             throw new BadRequestError('Error: Course name already exists')
         }
 
-        const author = await findById(user)
+        const author = await userModel.findById(user).lean()
 
         const newCourse = await courseModel.create({
             name,

@@ -1,6 +1,7 @@
 'use strict'
 
-const { findLessonById, getAllVocab } = require('./course_.service')
+const { getAllVocab } = require('../models/repos/vocab.repo')
+const { findLessonById } = require('../models/repos/lesson.repo')
 const vocabularyModel = require('../models/vocab.model')
 const { BadRequestError, NotFoundError } = require('../core/error.response')
 const { updateVocab } = require('../models/repos/vocab.repo')

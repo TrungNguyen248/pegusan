@@ -19,6 +19,16 @@ const findAllReleaseLesson = async ({ query, limit, skip }) => {
     return await queryLesson({ query, limit, skip })
 }
 
+const findLessonById = async (lesson_id) => {
+    return await lessonModel.findById(convert2ObjectId(lesson_id))
+}
+
+const getAllLesson = async (course_id) => {
+    return await lessonModel
+        .find({ course: convert2ObjectId(course_id) })
+        .lean()
+}
+
 const findOneLesson = async (lesson_id) => {
     return await lessonModel
         .findOne({ _id: lesson_id })
@@ -142,4 +152,6 @@ module.exports = {
     addVocabIdToLesson,
     removeGrammarIdFromLesson,
     removeVocabIdFromLesson,
+    findLessonById,
+    getAllLesson,
 }

@@ -1,7 +1,7 @@
 'use strict'
 
 const JWT = require('jsonwebtoken')
-const asyncHandler = require('../helpers/asyncHandler')
+const asyncHandler = require('../middlewares/asyncHandler')
 const { AuthFailureError, NotFoundError } = require('../core/error.response')
 const { findByUserId } = require('../services/keyToken.service')
 
@@ -25,9 +25,9 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
 
         JWT.verify(accessToken, publicKey, (err, decode) => {
             if (err) {
-                console.log(`error verify:`, err)
+                throw new AuthFailureError(err)
             } else {
-                console.log(`decode verify:`, decode)
+                //console.log(`decode verify:`, decode)
             }
         })
         return { accessToken, refreshToken }
@@ -79,7 +79,7 @@ const authentication = asyncHandler(async (req, res, next) => {
             throw new AuthFailureError('Invalid UserId')
         req.keyStore = keyStore
         req.user = decodeUser
-        //console.log(decodeUser)
+        //console.log('decodeUser', decodeUser)
         return next()
     } catch (error) {
         throw error

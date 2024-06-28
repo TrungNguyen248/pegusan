@@ -1,11 +1,13 @@
 'use strict'
 
 const { ReasonPhrases, StatusCodes } = require('./httpStatusCode')
+const myLogger = require('../loggers/mylogger.log')
 
 class ErrorResponse extends Error {
     constructor(message, status) {
         super(message)
         this.status = status
+        this.now = Date.now()
     }
 }
 
@@ -54,10 +56,20 @@ class ForbiddenError extends ErrorResponse {
     }
 }
 
+class RedisError extends ErrorResponse {
+    constructor(
+        message = ReasonPhrases.INTERNAL_SERVER_ERROR,
+        statusCode = StatusCodes.INTERNAL_SERVER_ERROR
+    ) {
+        super(message, statusCode)
+    }
+}
+
 module.exports = {
     ConflictRequestError,
     BadRequestError,
     AuthFailureError,
     NotFoundError,
     ForbiddenError,
+    RedisError,
 }

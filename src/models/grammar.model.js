@@ -11,23 +11,28 @@ const grammarSchema = new Schema(
         lesson: {
             type: Schema.Types.ObjectId,
             ref: 'Lesson',
-            required: true,
+        },
+        title: {
+            type: String,
         },
         structure: {
             type: String,
             required: true,
         },
-        explanation: {
+        explain: {
             type: String,
             required: true,
         },
-        example: {
+        examples: [
+            {
+                ja: String,
+                vi: String,
+            },
+        ],
+        level: {
             type: String,
         },
-        image: {
-            type: String,
-        },
-        notes: {
+        mean: {
             type: String,
         },
     },

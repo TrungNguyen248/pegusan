@@ -4,7 +4,7 @@ const { BadRequestError, NotFoundError } = require('../core/error.response')
 const lessonModel = require('../models/lesson.model')
 const courseModel = require('../models/course.model')
 const { removeUnderfinedObjectKey, convert2ObjectId } = require('../utils')
-const { getAllLesson } = require('./course_.service')
+const { getAllLesson } = require('../models/repos/lesson.repo')
 const {
     findAllDraftLesson,
     releaseLesson,
@@ -13,6 +13,7 @@ const {
     updateLesson,
     findOneLesson,
 } = require('../models/repos/lesson.repo')
+const hinaModel = require('../models/hina.model')
 
 class LessonService {
     static createLesson = async ({ course_id, lesson_title, ...bodyData }) => {
@@ -39,21 +40,26 @@ class LessonService {
         return newLesson
     }
 
-    static getAll = async (course_id) => {
+    static getAll = async ({ course_id, isHina = false }) => {
         const courseExist = await courseModel
             .findById(convert2ObjectId(course_id))
             .lean()
         if (!courseExist) throw new NotFoundError('Course not found!!')
-        const listLessons = await lessonModel
-            .find({
-                course: convert2ObjectId(course_id),
-            })
-            .lean()
+        if (isHina == true) {
+            const listLessons = await hinaModel
+                .find({
+                    course: course_id,
+                })
+                .select('lesson_id lesson_title -_id')
+            return listLessons
+        } else {
+            const listLessons = await getAllLesson(course_id)
 
-        if (listLessons.length == 0) {
-            return null
+            if (listLessons.length == 0) {
+                return null
+            }
+            return listLessons
         }
-        return listLessons
     }
     static getOneLesson = async (lesson_id) => {
         const lessonExists = await findOneLesson(lesson_id)

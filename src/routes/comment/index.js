@@ -1,7 +1,7 @@
 'use strict'
 
 const express = require('express')
-const asyncHandler = require('../../helpers/asyncHandler')
+const asyncHandler = require('../../middlewares/asyncHandler')
 const CommentController = require('../../controllers/comment.controller')
 const { authentication } = require('../../auth/authUtils')
 

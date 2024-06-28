@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose')
-const { kanjiToUnicode } = require('../utils')
+const { JapaneseToUnicode } = require('../utils')
 const lessonModel = require('./lesson.model')
 
 const DOCUMENT_NAME = 'Vocabulary'
@@ -10,7 +10,6 @@ const vocabularySchema = new Schema(
         lesson: {
             type: Schema.Types.ObjectId,
             ref: 'Lesson',
-            required: true,
         },
         word: {
             type: String,
@@ -31,20 +30,10 @@ const vocabularySchema = new Schema(
             type: String,
             required: true,
         },
-        category: {
-            type: String,
-            enum: [
-                'noun',
-                'verb',
-                'adjective',
-                'adverb',
-                'preposition',
-                'conjunction',
-                'interjection',
-            ],
-            required: true,
-        },
         example: {
+            type: String,
+        },
+        tags: {
             type: String,
         },
         notes: {
@@ -59,7 +48,7 @@ const vocabularySchema = new Schema(
 
 //before save document
 vocabularySchema.pre('save', async function (next) {
-    this.hex_string = kanjiToUnicode(this.kanji)
+    this.hex_string = JapaneseToUnicode(this.kanji)
 })
 
 module.exports = model(DOCUMENT_NAME, vocabularySchema)

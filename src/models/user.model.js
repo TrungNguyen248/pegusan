@@ -17,27 +17,40 @@ const userSchema = new Schema(
             type: String,
             trim: true,
             unique: true,
-        },
-        points: {
-            type: Number,
-            default: 0,
+            required: true,
         },
         password: {
             type: String,
             required: true,
         },
+        salf: {
+            type: String,
+            default: '',
+        },
         status: {
             type: String,
-            enum: ['active', 'inactive'],
-            default: 'inactive',
+            enum: ['active', 'pending', 'block'],
+            default: 'pending',
         },
-        verify: {
-            type: Schema.Types.Boolean,
-            default: false,
+        date_of_birth: {
+            type: Date,
+            default: null,
+        },
+        sex: {
+            type: String,
+            default: '',
+        },
+        avatar: {
+            type: String,
+            default: '',
         },
         roles: {
-            type: Array,
-            default: [],
+            type: Schema.Types.ObjectId,
+            ref: 'Role',
+        },
+        phone: {
+            type: String,
+            default: '',
         },
     },
     {

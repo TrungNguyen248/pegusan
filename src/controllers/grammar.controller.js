@@ -10,6 +10,21 @@ class GrammarController {
             metadata: await GrammarService.addGrammar(req.body),
         }).send(res)
     }
+
+    getAll = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'get all grammar',
+            metadata: await GrammarService.getAllGrammar(req.body),
+        }).send(res)
+    }
+
+    getGrammarByLv = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'get grammar byLv successfully',
+            metadata: await GrammarService.getGrammarByLevel(req.params.level),
+        }).send(res)
+    }
+
     updateGrammar = async (req, res, next) => {
         new SuccessResponse({
             message: 'Grammar updated successfully',

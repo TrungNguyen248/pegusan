@@ -17,13 +17,7 @@ const lessonSchema = new Schema(
             type: String,
             required: true,
         },
-        isDraft: {
-            type: Boolean,
-            default: true,
-            index: true,
-            select: false,
-        },
-        isRelease: {
+        isPublic: {
             type: Boolean,
             default: false,
             index: true,

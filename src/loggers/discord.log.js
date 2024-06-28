@@ -1,7 +1,11 @@
 'use strict'
 
 const { Client, GatewayIntentBits } = require('discord.js')
-const { CHANNELID_DISCORD, TOKEN_DISCORD } = process.env
+const {
+    notification: {
+        discord: { token, channelId },
+    },
+} = require('../configs/config')
 
 class LoggerService {
     constructor() {
@@ -15,13 +19,13 @@ class LoggerService {
         })
 
         //add channel
-        this.channelId = CHANNELID_DISCORD
+        this.channelId = channelId
 
         this.client.on('ready', () => {
             console.log(`Logged in as ${this.client.user.tag}`)
         })
 
-        this.client.login(TOKEN_DISCORD)
+        this.client.login(token)
     }
 
     sendToFormatCode(logData) {
