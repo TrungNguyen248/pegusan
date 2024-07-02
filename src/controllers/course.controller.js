@@ -4,6 +4,15 @@ const { CREATED, SuccessResponse } = require('../core/success.response')
 const CourseService = require('../services/course.service')
 
 class CourseController {
+    registerCourseCtr = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'Course registered successfully',
+            metadata: await CourseService.registerCourse({
+                ...req.body,
+                userId: req.user.userId,
+            }),
+        }).send(res)
+    }
     createCourse = async (req, res, next) => {
         new CREATED({
             message: 'Course created successfully',
@@ -16,7 +25,9 @@ class CourseController {
     getAllCourse = async (req, res, next) => {
         new SuccessResponse({
             message: 'successfully',
-            metadata: await CourseService.getAllCourse(),
+            metadata: await CourseService.getAllCourse({
+                userId: req.user.userId,
+            }),
         }).send(res)
     }
     updateCourse = async (req, res, next) => {

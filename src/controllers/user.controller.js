@@ -2,7 +2,7 @@
 
 const { SuccessResponse } = require('../core/success.response')
 const {
-    newUserService,
+    profileService,
     checkLoginEmailTokenService,
     verifyEmailService,
 } = require('../services/user.service')
@@ -16,17 +16,6 @@ class UserController {
             }),
         }).send(res)
     }
-    //new user
-    newUser = async (req, res, next) => {
-        const response = await newUserService({
-            email: req.body.email,
-        })
-        new SuccessResponse({
-            message: 'new user successfully',
-            metadata: response,
-        }).send(res)
-    }
-
     //check user token via email
     checkLoginEmailToken = async (req, res, next) => {
         const { token = null } = req.query
@@ -35,6 +24,15 @@ class UserController {
             message: 'User login successfully',
             metadata: await checkLoginEmailTokenService({
                 token,
+            }),
+        }).send(res)
+    }
+    //user profile
+    profileCtr = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'User profile successfully',
+            metadata: await profileService({
+                userId: req.user.userId,
             }),
         }).send(res)
     }

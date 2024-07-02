@@ -7,6 +7,7 @@ const crypto = require('crypto')
 const KeyTokenService = require('./keyToken.service')
 const { createTokenPair } = require('../auth/authUtils')
 const { getInfoData } = require('../utils')
+const { parseBypoint } = require('../utils/level_up.util')
 const {
     BadRequestError,
     AuthFailureError,
@@ -16,6 +17,7 @@ const {
 const AccessValidator = require('../validators/access.validator')
 // const { createUserRedis } = require('../utils/redis.util')
 const roleModel = require('../models/role.model')
+const progressModel = require('../models/progress.model')
 
 // thay bang truy van tu database docs role
 const RoleApp = {
@@ -90,8 +92,15 @@ class AccessService {
         if (!userExist) throw new NotFoundError('Tài khoản chưa đăng kí.')
         //2-match password
         const match = await bcrypt.compare(password, userExist.password)
-        if (!match)
-            throw new AuthFailureError('Email hoặc mật khẩu không đúng.')
+        if (!match) throw new AuthFailureError('Mật khẩu không đúng.')
+
+        const user_point = await pointModel
+            .findOne({
+                user: userExist._id,
+            })
+            .lean()
+        const levelDetail = parseBypoint(user_point.total_point)
+
         //3-create AT vs RT and save
         const privateKey = crypto.randomBytes(64).toString('hex')
         const publicKey = crypto.randomBytes(64).toString('hex')
@@ -115,10 +124,13 @@ class AccessService {
         })
 
         return {
-            user: getInfoData({
-                fields: ['_id', 'name', 'email', 'avatar'],
-                object: userExist,
-            }),
+            user: {
+                ...getInfoData({
+                    fields: ['_id', 'name', 'email', 'avatar'],
+                    object: userExist,
+                }),
+                ...levelDetail,
+            },
             tokens,
         }
     }
@@ -185,6 +197,10 @@ class AccessService {
                 weeklyScores: [],
             })
 
+            await progressModel.create({
+                user: newUser._id,
+            })
+
             //create hash user redis
             // await createUserRedis({
             //     user_id: newUser._id,
@@ -198,6 +214,7 @@ class AccessService {
                     fields: ['_id', 'name', 'email'],
                     object: newUser,
                 }),
+                level: 1,
                 tokens,
             }
         }

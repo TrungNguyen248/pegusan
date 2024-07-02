@@ -27,6 +27,10 @@ const courseSchema = new Schema(
         author: {
             type: String,
         },
+        stu_num: {
+            type: Number,
+            default: 0,
+        },
     },
     {
         timestamps: true,

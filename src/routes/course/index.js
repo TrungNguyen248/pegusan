@@ -11,6 +11,12 @@ const router = express.Router()
 router.use(authentication)
 
 router.post(
+    '/register',
+    grantAccess('readAny', 'course'),
+    asyncHandler(courseController.registerCourseCtr)
+)
+
+router.post(
     '/all',
     grantAccess('readAny', 'course'),
     asyncHandler(courseController.getAllCourse)

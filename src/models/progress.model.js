@@ -31,7 +31,6 @@ const progressSchema = new Schema(
                 ],
                 lessonType: {
                     type: String,
-                    required: true,
                     enum: ['Lesson', 'Hina'],
                 },
             },
