@@ -20,7 +20,10 @@ const getHina = async (req, res, next) => {
 const getHinaLesson = async (req, res, next) => {
     new SuccessResponse({
         message: 'Get hina lesson success',
-        metadata: await getHinaByLesson(req.body),
+        metadata: await getHinaByLesson({
+            ...req.body,
+            userId: req.user.userId,
+        }),
     }).send(res)
 }
 

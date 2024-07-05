@@ -3,7 +3,7 @@
 const hinaModel = require('../hina.model')
 
 const findHinaByLessonId = async (lesson_id) => {
-    return await hinaModel.findOne({ lesson_id: lesson_id })
+    return await hinaModel.findOne({ lesson_id: lesson_id }).lean()
 }
 
 const createHina = async (course_id, bodyData) => {

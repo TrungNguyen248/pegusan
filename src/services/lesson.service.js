@@ -14,6 +14,8 @@ const {
     findOneLesson,
 } = require('../models/repos/lesson.repo')
 const hinaModel = require('../models/hina.model')
+const progressModel = require('../models/progress.model')
+const { forEach } = require('lodash')
 
 class LessonService {
     static createLesson = async ({ course_id, lesson_title, ...bodyData }) => {
@@ -40,17 +42,43 @@ class LessonService {
         return newLesson
     }
 
-    static getAll = async ({ course_id, isHina = false }) => {
+    static getAll = async ({ userId, course_id }) => {
         const courseExist = await courseModel
             .findById(convert2ObjectId(course_id))
             .lean()
         if (!courseExist) throw new NotFoundError('Course not found!!')
-        if (isHina == true) {
+
+        const userProgression = await progressModel.findOne({
+            user: convert2ObjectId(userId),
+        })
+        const listRegistered = userProgression.progress
+        if (courseExist.type == 'Hina') {
             const listLessons = await hinaModel
                 .find({
                     course: course_id,
                 })
-                .select('lesson_id lesson_title -_id')
+                .select('lesson_id lesson_title')
+                .lean()
+
+            let ls = []
+            for (let i = 0; i < listRegistered.length; i++) {
+                if (
+                    course_id.toString() === listRegistered[i].course.toString()
+                ) {
+                    ls = listRegistered[i].lessons
+                }
+            }
+
+            listLessons.forEach((lesson, idx) => {
+                for (let i = 0; i < ls.length; i++) {
+                    if (lesson._id.toString() === ls[i].toString()) {
+                        listLessons[idx] = {
+                            ...listLessons[idx],
+                            learnt: true,
+                        }
+                    }
+                }
+            })
             return listLessons
         } else {
             const listLessons = await getAllLesson(course_id)

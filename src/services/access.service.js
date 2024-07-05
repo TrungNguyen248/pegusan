@@ -210,11 +210,13 @@ class AccessService {
             // })
 
             return {
-                user: getInfoData({
-                    fields: ['_id', 'name', 'email'],
-                    object: newUser,
-                }),
-                level: 1,
+                user: {
+                    ...getInfoData({
+                        fields: ['_id', 'name', 'email'],
+                        object: newUser,
+                    }),
+                    level: 1,
+                },
                 tokens,
             }
         }

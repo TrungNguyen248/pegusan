@@ -6,24 +6,27 @@ const userModel = require('../models/user.model')
 const { convert2ObjectId } = require('../utils')
 
 const updateProgress = async ({ userId, ...bodyData }) => {
-    const userExist = await userModel.findById(userId)
+    const userExist = await userModel.findById(convert2ObjectId(userId))
     if (!userExist) throw new NotFoundError('User not exist')
 
-    const progressExist = await progressModel.findOne({ user: userId }).lean()
+    const progressExist = await progressModel
+        .findOne({ user: convert2ObjectId(userId) })
+        .lean()
     if (!progressExist) {
+        return {}
         //taoj khi create account
         //hcuyen sang access
-        const newProgress = await progressModel.create({
-            user: userId,
-            ...bodyData,
-        })
-        return newProgress
+        // const newProgress = await progressModel.create({
+        //     user: userId,
+        //     ...bodyData,
+        // })
+        // return newProgress
     } else {
         // Check have achievements
         if (bodyData.achievement_title) {
             const rs = await progressModel.findOneAndUpdate(
                 {
-                    user: userId,
+                    user: convert2ObjectId(userId),
                 },
                 {
                     $push: {
@@ -53,7 +56,7 @@ const updateProgress = async ({ userId, ...bodyData }) => {
                         isEqual = true
                         rs = await progressModel.findOneAndUpdate(
                             {
-                                user: userId,
+                                user: convert2ObjectId(userId),
                             },
                             {
                                 $push: {
@@ -77,7 +80,7 @@ const updateProgress = async ({ userId, ...bodyData }) => {
             if (!isEqual) {
                 rs = await progressModel.findOneAndUpdate(
                     {
-                        user: userId,
+                        user: convert2ObjectId(userId),
                     },
                     {
                         $push: {
@@ -99,7 +102,7 @@ const updateProgress = async ({ userId, ...bodyData }) => {
         if (bodyData.exam_id) {
             const rs = await progressModel.findOneAndUpdate(
                 {
-                    user: userId,
+                    user: convert2ObjectId(userId),
                 },
                 {
                     $push: {

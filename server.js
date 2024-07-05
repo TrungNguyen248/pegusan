@@ -6,7 +6,7 @@ const {
 const PORT = port || 8080
 
 const server = app.listen(PORT, () => {
-    console.log(`WSV eCommerce start with ${PORT}`)
+    console.log(`Server start with ${PORT}`)
 })
 
 // process.on("SIGINT", () => {

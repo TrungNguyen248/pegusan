@@ -5,12 +5,33 @@ const { findHinaByLessonId, createHina } = require('../models/repos/hina.repo')
 const { NotFoundError } = require('../core/error.response')
 const { getSignedUrl } = require('@aws-sdk/cloudfront-signer')
 const { convert2ObjectId } = require('../utils')
+const progressModel = require('../models/progress.model')
 
 const cloudFrontUrl = process.env.CLOUD_FRONT_URL
 
-const getHinaByLesson = async ({ lesson_id }) => {
-    const result = await findHinaByLessonId(lesson_id)
+const getHinaByLesson = async ({ userId, lesson_id, course_id }) => {
+    let result = await findHinaByLessonId(lesson_id)
     if (!result) throw new NotFoundError(`Not found any word ${result}`)
+    console.log('lessonInfo:::::::::::', result)
+    const userProgression = await progressModel.findOne({
+        user: convert2ObjectId(userId),
+    })
+    const listRegistered = userProgression.progress
+    listRegistered.forEach((el, idx) => {
+        if (el.course.toString() === course_id) {
+            const r = listRegistered[idx].lessons
+            for (let i = 0; i < r.length; i++) {
+                if (r[i].toString() === result._id.toString()) {
+                    console.log('TRue:::::::::::', r[i].toString())
+                    result = {
+                        ...result,
+                        learnt: true,
+                    }
+                    console.log('result:::::::::::', result)
+                }
+            }
+        }
+    })
 
     //sign url with cloudfront
     // result.svg_path.forEach((svg, i) => {
