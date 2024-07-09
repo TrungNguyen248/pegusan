@@ -30,6 +30,9 @@ const vocabularySchema = new Schema(
             type: String,
             required: true,
         },
+        audio: {
+            type: String,
+        },
         example: {
             type: String,
         },

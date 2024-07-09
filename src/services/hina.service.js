@@ -12,7 +12,7 @@ const cloudFrontUrl = process.env.CLOUD_FRONT_URL
 const getHinaByLesson = async ({ userId, lesson_id, course_id }) => {
     let result = await findHinaByLessonId(lesson_id)
     if (!result) throw new NotFoundError(`Not found any word ${result}`)
-    console.log('lessonInfo:::::::::::', result)
+    //console.log('lessonInfo:::::::::::', result)
     const userProgression = await progressModel.findOne({
         user: convert2ObjectId(userId),
     })
@@ -22,12 +22,12 @@ const getHinaByLesson = async ({ userId, lesson_id, course_id }) => {
             const r = listRegistered[idx].lessons
             for (let i = 0; i < r.length; i++) {
                 if (r[i].toString() === result._id.toString()) {
-                    console.log('TRue:::::::::::', r[i].toString())
+                    //console.log('TRue:::::::::::', r[i].toString())
                     result = {
                         ...result,
                         learnt: true,
                     }
-                    console.log('result:::::::::::', result)
+                    //console.log('result:::::::::::', result)
                 }
             }
         }

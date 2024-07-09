@@ -52,7 +52,7 @@ class CourseService {
             user: convert2ObjectId(userId),
         })
 
-        const listRegistered = userProgression.progress
+        const listRegistered = userProgression?.progress
 
         listCourses.forEach((course, idx) => {
             for (let i = 0; i < listRegistered.length; i++) {

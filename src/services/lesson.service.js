@@ -53,7 +53,7 @@ class LessonService {
         })
         const listRegistered = userProgression.progress
         if (courseExist.type == 'Hina') {
-            const listLessons = await hinaModel
+            let listLessons = await hinaModel
                 .find({
                     course: course_id,
                 })
@@ -79,14 +79,22 @@ class LessonService {
                     }
                 }
             })
-            return listLessons
+
+            return {
+                listLessons: listLessons,
+                type: 'Hina',
+            }
         } else {
-            const listLessons = await getAllLesson(course_id)
+            let listLessons = await getAllLesson(course_id)
 
             if (listLessons.length == 0) {
                 return null
             }
-            return listLessons
+
+            return {
+                listLessons: listLessons,
+                type: 'Mina',
+            }
         }
     }
     static getOneLesson = async (lesson_id) => {

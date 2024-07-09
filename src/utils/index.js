@@ -1,5 +1,6 @@
 'use strict'
 
+const wanakana = require('wanakana')
 const { Types } = require('mongoose')
 const _ = require('lodash')
 const moment = require('moment')
@@ -37,10 +38,15 @@ const JapaneseToUnicode = (kanji) => {
     if (kanji == '' || kanji == null) {
         return
     }
+
     let unicodeArray = []
     for (let i = 0; i < kanji.length; i++) {
-        let unicode = kanji.charCodeAt(i).toString(16)
-        unicodeArray.push('0' + unicode.toLowerCase())
+        console.log(`kanji.charCodeAt(${i})`, kanji[i])
+        if (wanakana.isKanji(kanji[i])) {
+            console.log('hey this is console log')
+            let unicode = kanji.charCodeAt(i).toString(16)
+            unicodeArray.push('0' + unicode.toLowerCase())
+        }
     }
     return unicodeArray
 }
