@@ -69,9 +69,16 @@ const profileService = async ({ userId }) => {
     const userExist = await userModel.findById(convert2ObjectId(userId))
     if (!userExist)
         throw new AuthFailureError('AuthFailureError:User not found')
-    const progress = await progressModel.findOne({
-        user: convert2ObjectId(userId),
-    })
+    const progress = await progressModel
+        .findOne({
+            user: convert2ObjectId(userId),
+        })
+        .populate({
+            path: 'progress',
+            populate: { path: 'course', select: 'name stu_num thumb ' },
+        })
+        .select('progress achievements ')
+        .lean()
     const user_point = await pointModel
         .findOne({
             user: userId,

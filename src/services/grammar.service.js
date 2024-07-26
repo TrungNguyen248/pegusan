@@ -40,16 +40,19 @@ class GrammarService {
         }
     }
 
-    static getGrammarByLevel = async (level, limit = 10) => {
+    static getGrammarByLevel = async (level, page, limit = 12) => {
         const grammars = await grammarModel
             .find({
                 level: level.toUpperCase(),
             })
             .limit(limit)
-            .lean()
+            .skip(limit * page)
+        const count = await grammarModel.countDocuments({
+            level: level.toUpperCase(),
+        })
         if (grammars.length <= 0)
             throw new NotFoundError('No grammar found for level ' + level)
-        return grammars
+        return { grammars: grammars, count: count }
     }
 
     static getAllGrammar = async ({ lesson_id }) => {

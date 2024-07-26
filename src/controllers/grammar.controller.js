@@ -21,7 +21,10 @@ class GrammarController {
     getGrammarByLv = async (req, res, next) => {
         new SuccessResponse({
             message: 'get grammar byLv successfully',
-            metadata: await GrammarService.getGrammarByLevel(req.params.level),
+            metadata: await GrammarService.getGrammarByLevel(
+                req.params.level,
+                req.params.page
+            ),
         }).send(res)
     }
 

@@ -35,11 +35,11 @@ const findOneLesson = async (lesson_id) => {
         .populate('course', 'name author -_id')
         .populate({
             path: 'contents',
-            populate: { path: 'vocabulary', select: '-_id' },
+            populate: { path: 'vocabulary' },
         })
         .populate({
             path: 'contents',
-            populate: { path: 'grammar', select: '-_id' },
+            populate: { path: 'grammar' },
         })
         .lean()
         .exec()

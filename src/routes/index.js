@@ -7,11 +7,11 @@ const { apiKey, permission } = require('../auth/checkAuth')
 const router = express.Router()
 
 //router.use(pushToLogDiscord)
-router.use('/v1/api/user', require('./user'))
 
 router.use(apiKey)
 router.use(permission('0000'))
 
+router.use('/v1/api/user', require('./user'))
 router.use('/v1/api/upload', require('./upload'))
 router.use('/v1/api/progress', require('./progress'))
 router.use('/v1/api/trans', require('./trans'))

@@ -10,7 +10,7 @@ const router = express.Router()
 router.use(authentication)
 
 router.post(
-    '/:level',
+    '/:level/:page',
     grantAccess('readAny', 'grammar'),
     asyncHandler(GrammarController.getGrammarByLv)
 )

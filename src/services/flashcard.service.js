@@ -9,11 +9,12 @@ const deckModel = require('../models/decks.model')
 const flcardModel = require('../models/flashcard.model')
 
 const getAllDeckByUserId = async ({ user_id }) => {
-    console.log('////////////////////////////////', user_id)
+    //console.log('////////////////////////////////', user_id)
     const listDecks = await deckModel
         .find({
             user: convert2ObjectId(user_id),
         })
+        .select('deck_title ')
         .lean()
 
     if (listDecks.length == 0)

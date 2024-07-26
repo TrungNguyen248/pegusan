@@ -16,7 +16,7 @@ const rbac = new AccessControl()
 const grantAccess = (action, resource) => {
     return async (req, res, next) => {
         try {
-            console.log(`granted access:::::`, req.user)
+            //console.log(`granted access:::::`, req.user)
             const roleListName = 'app_permissions'
             const rolesList = await redisClient.get(roleListName)
             if (!rolesList || rolesList == null) {
