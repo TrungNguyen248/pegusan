@@ -16,8 +16,8 @@ router.use(authentication)
 
 router.post('/svg', asyncHandler(getSvgContentCtr))
 router.post('/add', grantAccess('createAny', 'kanji'), asyncHandler(addKanji))
-router.get(
-    '/:jlpt',
+router.post(
+    '/:jlpt/:page',
     grantAccess('readAny', 'kanji'),
     asyncHandler(getAllKanjiByLevel)
 )

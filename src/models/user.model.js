@@ -23,10 +23,11 @@ const userSchema = new Schema(
             type: String,
             required: true,
         },
-        salf: {
-            type: String,
-            default: '',
-        },
+
+        // salf: {
+        //     type: String,
+        //     default: '',
+        // },
         status: {
             type: String,
             enum: ['active', 'pending', 'block'],
@@ -37,8 +38,7 @@ const userSchema = new Schema(
             default: null,
         },
         sex: {
-            type: String,
-            default: '',
+            type: Number,
         },
         avatar: {
             type: String,

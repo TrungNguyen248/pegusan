@@ -18,7 +18,7 @@ const getSvgContentCtr = async (req, res, next) => {
 const getAllKanjiByLevel = async (req, res, next) => {
     new SuccessResponse({
         message: 'Get list of Kanji successfully',
-        metadata: await allKanjiByLevel(req.params.jlpt),
+        metadata: await allKanjiByLevel(req.params.jlpt, req.params.page),
     }).send(res)
 }
 

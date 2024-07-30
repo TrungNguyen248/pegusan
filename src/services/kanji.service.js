@@ -18,8 +18,8 @@ const getSvgContent = async ({ kanji }) => {
     return res.data
 }
 
-const allKanjiByLevel = async (level) => {
-    const result = await getAllKanjiByLevel(level.toUpperCase())
+const allKanjiByLevel = async (level, page) => {
+    const result = await getAllKanjiByLevel(level.toUpperCase(), page)
     if (result.length <= 0)
         throw new NotFoundError(`Not found any kanji ${level} `)
     return result
