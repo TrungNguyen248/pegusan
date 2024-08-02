@@ -24,13 +24,28 @@ const getAllDeckByUserId = async ({ user_id }) => {
 }
 
 const getAllFlCardByDeck = async ({ deck_id }) => {
-    const listFlcards = await flcardModel.find({
-        deck: convert2ObjectId(deck_id),
-    })
+    const foundDeck = await deckModel
+        .findById(convert2ObjectId(deck_id))
+        .select('deck_title -_id')
+        .lean()
+
+    if (!foundDeck) throw NotFoundError('Khong tim thay thu muc')
+    const listFlcards = await flcardModel
+        .find({
+            deck: convert2ObjectId(deck_id),
+        })
+        .populate('vocab', '')
+        .populate('kanji', '')
+        .populate('grammar', '')
+        .select('vocab grammar interval reviewDate')
+
     if (listFlcards.length == 0)
         throw new NotFoundError('Chua co tu nao duoc them!')
 
-    return listFlcards
+    return {
+        flashcard: listFlcards,
+        ...foundDeck,
+    }
 }
 
 const createDeck = async ({ user_id, deck_title }) => {
@@ -51,37 +66,30 @@ const createDeck = async ({ user_id, deck_title }) => {
     return newDeck
 }
 
-const addFlCardToDeck = async ({ deck_id, level, ...bodyData }) => {
+const addFlCardToDeck = async ({ deck_id, type, level = 1, ...bodyData }) => {
     const deckExists = await deckModel
         .findById(convert2ObjectId(deck_id))
         .lean()
     if (!deckExists) throw new NotFoundError('deck not found')
 
     const { date, interval } = nextReviewDate(level)
-    if (bodyData.vocab_id && bodyData.vocab_id != '') {
-        bodyData = {
-            ...bodyData,
-            vocab: convert2ObjectId(bodyData.vocab_id),
-        }
-    }
-    if (bodyData.kanji_id && bodyData.kanji_id != '') {
-        bodyData = {
-            ...bodyData,
-            kanji: convert2ObjectId(bodyData.kanji_id),
+
+    if (type == 'vocab') {
+        for (let key in bodyData.vocab) {
+            await flcardModel.create({
+                deck: convert2ObjectId(deck_id),
+                vocab: convert2ObjectId(bodyData.vocab[key]),
+                interval: interval,
+                reviewDate: date,
+            })
         }
     }
 
-    const newFlCard = await flcardModel.create({
-        deck: convert2ObjectId(deck_id),
-        interval: interval,
-        reviewDate: date,
-        ...bodyData,
-    })
-
-    return newFlCard
+    return 1
 }
 
 const updateFlCard = async ({ flcard_id, level }) => {
+    //check level = 0 remove from lít
     const flcardExists = await flcardModel.findById(convert2ObjectId(flcard_id))
     if (!flcardExists) throw new NotFoundError(`Flash Card not found`)
 
@@ -90,26 +98,17 @@ const updateFlCard = async ({ flcard_id, level }) => {
     flcardExists.reviewDate = date
     flcardExists.interval = interval
     await flcardExists.save()
-    if (flcardExists.kanji) {
-        const result = await flcardModel
-            .findById(convert2ObjectId(flcard_id))
-            .populate('kanji', 'kanji cn_vi_word component kunyomi onyomi')
-            .lean()
 
-        return {
-            ...result,
-            reviewDate: moment(new Date(result.reviewDate)).format(),
-        }
-    }
-    if (flcardExists.vocab) {
-        const result = await flcardModel
-            .findById(convert2ObjectId(flcard_id))
-            .populate('vocab')
-
-        return {
-            ...result,
-            reviewDate: moment(new Date(result.reviewDate)).format(),
-        }
+    const result = await flcardModel
+        .findById(convert2ObjectId(flcard_id))
+        .populate('vocab', '')
+        .populate('kanji', '')
+        .populate('grammar', '')
+        .select('vocab grammar interval reviewDate')
+        .lean()
+    return {
+        ...result,
+        reviewDate: moment(new Date(result.reviewDate)).format(),
     }
 }
 

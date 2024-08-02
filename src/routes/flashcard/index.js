@@ -4,6 +4,8 @@ const express = require('express')
 const asyncHandler = require('../../middlewares/asyncHandler')
 const { authentication } = require('../../auth/authUtils')
 // const { scheduleController } = require('../../controllers/schedule.controller')
+const { grantAccess } = require('../../middlewares/rbac')
+
 const {
     addFlCardToDeckCtr,
     createDeckCtr,
@@ -15,10 +17,31 @@ const {
 const router = express.Router()
 router.use(authentication)
 
-router.post('/', asyncHandler(createDeckCtr))
-router.post('/add', asyncHandler(addFlCardToDeckCtr))
-router.patch('/:flcard_id', asyncHandler(updateFlCardCtr))
-router.post('/all_deck', asyncHandler(getAllDeckByUserIdCtr))
-router.post('/all_by_deck', asyncHandler(getAllFlCardByDeckCtr))
+//add lại resource của deck và flash card => thêm create:any
+router.post(
+    '/',
+    grantAccess('updateAny', 'flashcard'),
+    asyncHandler(createDeckCtr)
+)
+router.post(
+    '/add',
+    grantAccess('updateAny', 'flashcard'),
+    asyncHandler(addFlCardToDeckCtr)
+)
+router.patch(
+    '/:flcard_id',
+    grantAccess('updateAny', 'flashcard'),
+    asyncHandler(updateFlCardCtr)
+)
+router.post(
+    '/all_deck',
+    grantAccess('readAny', 'flashcard'),
+    asyncHandler(getAllDeckByUserIdCtr)
+)
+router.post(
+    '/all_by_deck',
+    grantAccess('readAny', 'flashcard'),
+    asyncHandler(getAllFlCardByDeckCtr)
+)
 
 module.exports = router
