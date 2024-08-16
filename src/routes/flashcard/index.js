@@ -12,12 +12,19 @@ const {
     updateFlCardCtr,
     getAllDeckByUserIdCtr,
     getAllFlCardByDeckCtr,
+    getFlReview,
 } = require('../../controllers/flashcard.controller')
 
 const router = express.Router()
 router.use(authentication)
 
 //add lại resource của deck và flash card => thêm create:any
+router.get(
+    '/review',
+    grantAccess('readAny', 'flashcard'),
+    asyncHandler(getFlReview)
+)
+
 router.post(
     '/',
     grantAccess('updateAny', 'flashcard'),

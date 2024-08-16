@@ -15,6 +15,7 @@ const { pushNotiToSystem } = require('./notification.service')
 const progressModel = require('../models/progress.model')
 
 class CourseService {
+    //REGISTER COURSE
     static registerCourse = async ({ userId, courseId }) => {
         const userExist = await userModel.findById(convert2ObjectId(userId))
         if (!userExist)
@@ -44,6 +45,8 @@ class CourseService {
         await userProgression.save()
         return 1
     }
+    //END REGISTER COURSE
+    //GET ALL COURSE
     static getAllCourse = async ({ userId }) => {
         const listCourses = await getAll()
         if (listCourses.length == 0) return null
@@ -70,8 +73,9 @@ class CourseService {
 
         return listCourses
     }
+    //END GET ALL COURSE
+    //CREATE COURSE
     static createCourse = async ({ name, thumb, user }) => {
-        //check course exists
         const courseExist = await findByName(name)
         if (courseExist) {
             throw new BadRequestError('Error: Course name already exists')
@@ -92,7 +96,6 @@ class CourseService {
             senderId: user.userId,
             options: {
                 course_name: newCourse.name,
-                author: author.name,
             },
         })
             .then((rs) => console.log(rs))
@@ -101,6 +104,8 @@ class CourseService {
 
         return newCourse
     }
+    //END CREATE COURSE
+    //UPDATE COURSE
     static updateCourse = async (course_id, bodyUpdate) => {
         const courseExist = await courseModel.findById(
             convert2ObjectId(course_id)
@@ -111,6 +116,7 @@ class CourseService {
             removeUnderfinedObjectKey(bodyUpdate)
         )
     }
+    //END UPDATE COURSE
 }
 
 module.exports = CourseService

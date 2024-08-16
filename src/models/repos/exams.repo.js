@@ -13,7 +13,7 @@ const createExams = async (bodyData) => {
 }
 
 const findExamsById = async (id) => {
-    return await examsModel.findById(id).select('tags contents -_id')
+    return await examsModel.findById(id).select('tags title contents -_id')
 }
 
 const updateExams = async (exam_id, bodyUpdate, isNew = true) => {

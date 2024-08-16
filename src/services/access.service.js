@@ -120,7 +120,6 @@ class AccessService {
             privateKey,
             publicKey,
         })
-
         return {
             user: {
                 ...getInfoData({

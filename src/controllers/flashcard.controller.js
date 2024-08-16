@@ -6,8 +6,18 @@ const {
     updateFlCard,
     getAllDeckByUserId,
     getAllFlCardByDeck,
+    getFlashCardReview,
 } = require('../services/flashcard.service')
 const { SuccessResponse } = require('../core/success.response')
+
+const getFlReview = async (req, res, next) => {
+    new SuccessResponse({
+        message: 'get flashcard review success',
+        metadata: await getFlashCardReview({
+            user_id: req.user.userId,
+        }),
+    }).send(res)
+}
 
 const getAllDeckByUserIdCtr = async (req, res, next) => {
     new SuccessResponse({
@@ -53,6 +63,7 @@ const updateFlCardCtr = async (req, res, next) => {
 }
 
 module.exports = {
+    getFlReview,
     createDeckCtr,
     updateFlCardCtr,
     addFlCardToDeckCtr,

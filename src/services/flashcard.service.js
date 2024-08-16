@@ -8,8 +8,35 @@ const { nextReviewDate } = require('../utils')
 const deckModel = require('../models/decks.model')
 const flcardModel = require('../models/flashcard.model')
 
+const getFlashCardReview = async ({ user_id }) => {
+    const listDecks = await deckModel
+        .find({
+            user: convert2ObjectId(user_id),
+        })
+        .lean()
+    if (listDecks.length <= 0)
+        throw new NotFoundError('Khong co thu muc on tap')
+    let result = []
+    const today = new Date()
+    await Promise.all(
+        listDecks.map(async (deck) => {
+            const flReview = await flcardModel
+                .find({
+                    deck: deck._id,
+                    reviewDate: { $lte: today },
+                })
+                .populate('vocab', '')
+                .populate('kanji', '')
+                .populate('grammar', '')
+                .select('vocab grammar interval reviewDate')
+            flReview.forEach((fl) => result.push(fl))
+        })
+    )
+
+    return result
+}
+
 const getAllDeckByUserId = async ({ user_id }) => {
-    //console.log('////////////////////////////////', user_id)
     const listDecks = await deckModel
         .find({
             user: convert2ObjectId(user_id),
@@ -49,8 +76,6 @@ const getAllFlCardByDeck = async ({ deck_id }) => {
 }
 
 const createDeck = async ({ user_id, deck_title }) => {
-    //console.log('////////////////////////////////', user_id)
-
     const deckExists = await deckModel
         .findOne({
             deck_title,
@@ -93,6 +118,15 @@ const updateFlCard = async ({ flcard_id, level }) => {
     const flcardExists = await flcardModel.findById(convert2ObjectId(flcard_id))
     if (!flcardExists) throw new NotFoundError(`Flash Card not found`)
 
+    if (level == 0) {
+        await flcardModel.deleteOne({
+            _id: convert2ObjectId(flcard_id),
+        })
+
+        //frontend xu ly xoa khoi object render thay vi goi lai api tai thoi diem do?
+        return
+    }
+
     const { date, interval } = nextReviewDate(level)
 
     flcardExists.reviewDate = date
@@ -118,4 +152,5 @@ module.exports = {
     updateFlCard,
     getAllDeckByUserId,
     getAllFlCardByDeck,
+    getFlashCardReview,
 }

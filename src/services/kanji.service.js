@@ -33,12 +33,12 @@ const addKanjiService = async (bodyData) => {
 const kanjiByName = async ({ word }) => {
     const result = await getKanji(word)
     if (!result) throw new NotFoundError('Kanji not found')
-    result.svg_path = getSignedUrl({
-        url: `${cloudFrontUrl}/${result.svg_path}`,
-        keyPairId: process.env.KEY_PAIR_ID,
-        dateLessThan: new Date(Date.now() + 1000 * 3600 * 48), // het han trong 2 ngay
-        privateKey: process.env.AWS_BUCKET_PRIVATE_KEY_ID,
-    })
+    // result.svg_path = getSignedUrl({
+    //     url: `${cloudFrontUrl}/${result.svg_path}`,
+    //     keyPairId: process.env.KEY_PAIR_ID,
+    //     dateLessThan: new Date(Date.now() + 1000 * 3600 * 48), // het han trong 2 ngay
+    //     privateKey: process.env.AWS_BUCKET_PRIVATE_KEY_ID,
+    // })
     return result
 }
 

@@ -24,6 +24,7 @@ const courseSchema = new Schema(
         course_slug: {
             type: String,
         },
+        type: String,
         author: {
             type: String,
         },

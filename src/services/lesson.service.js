@@ -45,6 +45,7 @@ class LessonService {
     static getAll = async ({ userId, course_id }) => {
         const courseExist = await courseModel
             .findById(convert2ObjectId(course_id))
+            .select('name type')
             .lean()
         if (!courseExist) throw new NotFoundError('Course not found!!')
 
@@ -79,8 +80,8 @@ class LessonService {
                     }
                 }
             })
-
             return {
+                course: courseExist,
                 listLessons: listLessons,
                 type: 'Hina',
             }
@@ -90,8 +91,8 @@ class LessonService {
             if (listLessons.length == 0) {
                 return null
             }
-
             return {
+                course: courseExist,
                 listLessons: listLessons,
                 type: 'Mina',
             }

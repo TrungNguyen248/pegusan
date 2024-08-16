@@ -9,6 +9,7 @@ const { convert2ObjectId } = require('../utils')
 const { parseBypoint } = require('../utils/level_up.util')
 
 const submitPoint = async ({ userId, name, avatar, point_sm }) => {
+    console.log({ userId, name, avatar, point_sm })
     const currentWeek = moment().week()
     const currentYear = moment().year()
 
