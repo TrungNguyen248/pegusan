@@ -5,6 +5,7 @@ const asyncHandler = require('../../middlewares/asyncHandler')
 const { authentication } = require('../../auth/authUtils')
 const { grantAccess } = require('../../middlewares/rbac')
 const {
+    getAllKanji,
     getAllKanjiByLevel,
     getKanji,
     addKanji,
@@ -20,6 +21,11 @@ router.post(
     '/:jlpt/:page',
     grantAccess('readAny', 'kanji'),
     asyncHandler(getAllKanjiByLevel)
+)
+router.post(
+    '/:level',
+    grantAccess('readAny', 'kanji'),
+    asyncHandler(getAllKanji)
 )
 router.get('/', grantAccess('readAny', 'kanji'), asyncHandler(getKanji)) //?word=?
 //delete

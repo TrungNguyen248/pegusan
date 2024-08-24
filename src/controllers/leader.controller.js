@@ -1,5 +1,6 @@
 const { SuccessResponse } = require('../core/success.response')
 const {
+    getAllRank,
     submitPoint,
     getRankList,
     getRankByUserId,
@@ -12,7 +13,12 @@ const {
 //         metadata: await getTop10PreviousWeek(),
 //     }).send(res)
 // }
-
+const getAllRankCtr = async (req, res, next) => {
+    new SuccessResponse({
+        message: 'get all rank successfully',
+        metadata: await getAllRank(),
+    }).send(res)
+}
 const submitPointCtr = async (req, res, next) => {
     new SuccessResponse({
         message: 'add successfully',
@@ -37,5 +43,6 @@ const getRankByUserIdCtr = async (req, res, next) => {
 module.exports = {
     submitPointCtr,
     getRankListCtr,
+    getAllRankCtr,
     getRankByUserIdCtr,
 }

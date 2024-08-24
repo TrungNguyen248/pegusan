@@ -12,6 +12,10 @@ const { checkEmailToken } = require('./otp.service')
 const { convert2ObjectId } = require('../utils')
 const { parseBypoint } = require('../utils/level_up.util')
 
+const allUsers = async () => {
+    return await userModel.find().populate('roles', 'rol_name').lean()
+}
+
 const verifyEmailService = async ({ email }) => {
     const user = await userModel.findOne({ email }).lean()
 
@@ -94,6 +98,7 @@ const profileService = async ({ userId }) => {
 }
 
 module.exports = {
+    allUsers,
     newUserService,
     checkLoginEmailTokenService,
     verifyEmailService,

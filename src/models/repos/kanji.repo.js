@@ -6,6 +6,14 @@ const addKanji = async (data) => {
     return await kanjiModel.create(data)
 }
 
+const getAllKanji = async (level) => {
+    const result = await kanjiModel.find({ jlpt: level })
+    const count = await kanjiModel.countDocuments({
+        jlpt: level,
+    })
+    return { kanji: result, count: count }
+}
+
 const getAllKanjiByLevel = async (level, page, limit = 25) => {
     const result = await kanjiModel
         .find({ jlpt: level })
@@ -25,4 +33,5 @@ module.exports = {
     getAllKanjiByLevel,
     getKanji,
     addKanji,
+    getAllKanji,
 }

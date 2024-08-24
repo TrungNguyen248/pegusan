@@ -2,11 +2,19 @@
 
 const { SuccessResponse } = require('../core/success.response')
 const {
+    getAllKanjiService,
     allKanjiByLevel,
     kanjiByName,
     addKanjiService,
     getSvgContent,
 } = require('../services/kanji.service')
+
+const getAllKanji = async (req, res, next) => {
+    new SuccessResponse({
+        message: 'Get full kanji success',
+        metadata: await getAllKanjiService(req.params.level),
+    }).send(res)
+}
 
 const getSvgContentCtr = async (req, res, next) => {
     new SuccessResponse({
@@ -37,6 +45,7 @@ const getKanji = async (req, res, next) => {
 }
 
 module.exports = {
+    getAllKanji,
     getKanji,
     addKanji,
     getAllKanjiByLevel,

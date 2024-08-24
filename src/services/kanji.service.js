@@ -2,6 +2,7 @@
 
 const { getSignedUrl } = require('@aws-sdk/cloudfront-signer')
 const {
+    getAllKanji,
     getAllKanjiByLevel,
     getKanji,
     addKanji,
@@ -16,6 +17,13 @@ const getSvgContent = async ({ kanji }) => {
     const res = await axios.get(`${cloudFrontUrl}/${folderPath}/${kanji}.svg`)
 
     return res.data
+}
+
+const getAllKanjiService = async (level) => {
+    const result = await getAllKanji(level.toUpperCase())
+    if (result.length <= 0)
+        throw new NotFoundError(`Not found any kanji ${level} `)
+    return result
 }
 
 const allKanjiByLevel = async (level, page) => {
@@ -43,6 +51,7 @@ const kanjiByName = async ({ word }) => {
 }
 
 module.exports = {
+    getAllKanjiService,
     allKanjiByLevel,
     kanjiByName,
     addKanjiService,

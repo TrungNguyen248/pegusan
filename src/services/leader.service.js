@@ -4,9 +4,15 @@ const { getRedis } = require('../configs/config.redis')
 const { NotFoundError } = require('../core/error.response')
 const redisClient = getRedis()
 const pointModel = require('../models/point.model')
+const top10Model = require('../models/top10.model')
 const moment = require('moment')
 const { convert2ObjectId } = require('../utils')
 const { parseBypoint } = require('../utils/level_up.util')
+
+const getAllRank = async () => {
+    console.log('helllo')
+    return await top10Model.find().lean()
+}
 
 const submitPoint = async ({ userId, name, avatar, point_sm }) => {
     console.log({ userId, name, avatar, point_sm })
@@ -104,6 +110,7 @@ const getRankByUserId = async (userId) => {
 }
 
 module.exports = {
+    getAllRank,
     submitPoint,
     getRankList,
     getRankByUserId,

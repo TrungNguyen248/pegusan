@@ -2,12 +2,19 @@
 
 const { SuccessResponse } = require('../core/success.response')
 const {
+    allUsers,
     profileService,
     checkLoginEmailTokenService,
     verifyEmailService,
 } = require('../services/user.service')
 
 class UserController {
+    getAllUser = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'get list user success',
+            metadata: await allUsers(),
+        }).send(res)
+    }
     verifyEmailCtr = async (req, res, next) => {
         new SuccessResponse({
             message: 'Verified email successfully',

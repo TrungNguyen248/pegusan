@@ -7,6 +7,8 @@ const { authentication } = require('../../auth/authUtils')
 const { grantAccess } = require('../../middlewares/rbac')
 
 const router = express.Router()
+//update grant for get all user
+router.get('/all', asyncHandler(userController.getAllUser))
 router.get('/welcome-back', asyncHandler(userController.checkLoginEmailToken))
 router.use(authentication)
 //router.post('/new_user', asyncHandler(userController.newUser))

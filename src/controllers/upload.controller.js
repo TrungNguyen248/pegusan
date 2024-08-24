@@ -5,7 +5,7 @@ const { SuccessResponse } = require('../core/success.response')
 const {
     uploadImageFromUrl,
     uploadImageFromLocal,
-    uploadImageFromLocalS3,
+    uploadUserImage,
 } = require('../services/upload.service')
 
 class UploadController {
@@ -27,14 +27,15 @@ class UploadController {
     }
 
     //use s3
-    uploadImageFromLocalS3 = async (req, res, next) => {
+    uploadUserImageCtr = async (req, res, next) => {
         const { file } = req
         if (!file) {
             throw new BadRequestError('File missing')
         }
         new SuccessResponse({
             message: 'Upload successing upload use S3',
-            metadata: await uploadImageFromLocalS3({
+            metadata: await uploadUserImage({
+                user_id: req.user.userId,
                 file,
             }),
         }).send(res)

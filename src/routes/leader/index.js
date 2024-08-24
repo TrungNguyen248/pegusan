@@ -6,6 +6,7 @@ const { authentication } = require('../../auth/authUtils')
 const { grantAccess } = require('../../middlewares/rbac')
 
 const {
+    getAllRankCtr,
     submitPointCtr,
     getRankListCtr,
     getRankByUserIdCtr,
@@ -25,5 +26,10 @@ router.get(
     '/:user_id',
     grantAccess('readOwn', 'leader'),
     asyncHandler(getRankByUserIdCtr)
+)
+router.get(
+    '/week/all',
+    grantAccess('readAny', 'leader'),
+    asyncHandler(getAllRankCtr)
 )
 module.exports = router
